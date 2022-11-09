@@ -21,6 +21,7 @@
     "bootstrap": "^5.2.2",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
+    "firebase": "^9.13.0",
     "ngx-pagination": "^6.0.2",
     "pdfmake": "^0.2.6",
     "rxjs": "~7.5.0",

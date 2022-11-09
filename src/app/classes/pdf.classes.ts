@@ -39,6 +39,7 @@ class Pdf {
                     style: 'subheader',
                     margin: [0, 20]
                 },
+                '\n\n\n\n',
                 {
                     text: `${couple[1].split('|')[0].toUpperCase()}`,
                     style: 'header',

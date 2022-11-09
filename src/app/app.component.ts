@@ -27,6 +27,32 @@ export class AppComponent {
 
   private dataFiles!: string[][][] | undefined;
   private pdf = new Pdf();
+  private clintonList = [
+    {
+      person: 'Brayan Steven Sanchez Cuellar',
+      notAllowed: [
+        'Diana Marcela Florez Riascos'
+      ]
+    },
+    {
+      person: 'Diana Marcela Florez Riascos',
+      notAllowed: [
+        'Brayan Steven Sanchez Cuellar'
+      ]
+    },
+    {
+      person: 'Carolina O. Garcia',
+      notAllowed: [
+        'Juan Camilo Tangarife Tamayo'
+      ]
+    },
+    {
+      person: 'Juan Camilo Tangarife Tamayo',
+      notAllowed: [
+        'Carolina O. Garcia'
+      ]
+    }
+  ]
 
   @HostListener('change', ['$event']) emitFiles( event: any ) {
     const target = event.target as DataTransfer;
@@ -72,7 +98,8 @@ export class AppComponent {
 
       do {
         position = RandomNumber(0, data.length - 1);
-        if (position !== idx && !matchmaking.map(friends => { return friends.length > 1 ? friends[1] : '' }).includes(data[position].join('|'))) {
+        if (position !== idx && !matchmaking.map(friends => { return friends.length > 1 ? friends[1] : '' }).includes(data[position].join('|'))
+        && !this.isBetado(item.join('|'), data[position].join('|'))) {
           couple.push(data[position].join('|'));
         }
       } while(couple.length < 2);
@@ -138,5 +165,10 @@ export class AppComponent {
     this.msn.isSuccess = !isError && !isInfo;
     this.msn.show = true;
     this.msn.isInfo = isInfo;
+  }
+
+  private isBetado(person: string, friend: string) {
+    return (this.clintonList.map(clinton => clinton.person.toUpperCase()).includes(person.toUpperCase())
+    && (this.clintonList.find(clinton => clinton.person.toUpperCase() === person.toUpperCase()) as { person: string, notAllowed: string[] }).notAllowed.includes(friend));
   }
 }
