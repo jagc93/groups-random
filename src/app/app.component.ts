@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import Excel from './classes/excel.classes';
 import Pdf from './classes/pdf.classes';
-import { IsFileTypeValid } from './functions/file.functions';
+import { IsFilesTypeValid } from './functions/file.functions';
 import { RandomNumber } from './functions/numer-random.funtions';
 
 @Component({
@@ -14,7 +14,7 @@ export class AppComponent {
   public itemsPerPage = 10;
   public page = 1;
   public isLoading = false;
-  private file!: File | undefined;
+  private files!: FileList | undefined;
   public items!: string[] | undefined;
   public matchmaking!: string[][] | undefined;
   public msn = {
@@ -24,6 +24,7 @@ export class AppComponent {
     show: false,
     description: ''
   }
+  // public isFormSeeParticipants = false;
 
   private dataFiles!: string[][][] | undefined;
   private pdf = new Pdf();
@@ -56,22 +57,23 @@ export class AppComponent {
 
   @HostListener('change', ['$event']) emitFiles( event: any ) {
     const target = event.target as DataTransfer;
-    if (!this.isInvalidFileType('csv', target.files.item(0))) {
-      this.file = target.files.item(0) as File;
+    const ext = 'csv';
+    if (!this.isInvalidFilesType(ext, target.files)) {
+      this.files = target.files;
     } else {
-      this.alert('Dear user, only csv type files are allowed, please upload a valid file.');
+      this.alert(`Dear user, only ${ext} type files are allowed, please upload a valid file.`);
     }
   }
 
   public loadFile() {
-    if (this.isLoading || !this.file) {
+    if (this.isLoading || !this.files) {
       return;
     }
 
     this.isLoading = true;
 
     setTimeout(async () => {
-      await this.importCSV(this.file as File);
+      await this.importCSV((this.files as FileList).item(0) as File);
       this.isLoading = false;
     }, 100);
   }
@@ -126,7 +128,7 @@ export class AppComponent {
   }
 
   public cancel() {
-    this.file = undefined;
+    this.files = undefined;
     this.items = undefined;
     this.matchmaking = undefined;
     this.msn = {
@@ -140,8 +142,8 @@ export class AppComponent {
     this.dataFiles = undefined;
   }
 
-  private isInvalidFileType(type: string, file: File | null): boolean {
-    return !IsFileTypeValid(type, file);
+  private isInvalidFilesType(type: string, files: FileList | null): boolean {
+    return !IsFilesTypeValid(type, files);
   }
 
   private importCSV(file: File): Promise<void> {
